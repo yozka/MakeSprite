@@ -22,11 +22,22 @@ MakeSprites::~MakeSprites()
 
 void MakeSprites::readSettings()
 {
-	QSettings settings("hexotreeoptions");
+	const QString nameGroup = qApp->applicationFilePath();
+
+	QSettings settings("make_sprite");
+
+	QString name = settings.value(nameGroup).toString();
+	if (name.isEmpty())
+	{
+		name = nameGroup;
+	}
+	ui.settingName->setText(name);
+
+	settings.beginGroup(name);
 	ui.pathLink->setText(settings.value("pathLink", "").toString());
 	ui.pathFX->setText(settings.value("pathFX", "").toString());
 	ui.fileName->setText(settings.value("fileName", "").toString());
-	
+	settings.endGroup();
 	
 	
 }
@@ -41,12 +52,16 @@ void MakeSprites::closeEvent(QCloseEvent *e)
 
 void MakeSprites::saveSettings()
 {
-	QSettings settings("hexotreeoptions");
+	QSettings settings("make_sprite");
+
+	QString name = ui.settingName->text();
+	settings.setValue(qApp->applicationFilePath(), name);
+
+	settings.beginGroup(name);
 	settings.setValue("pathLink", ui.pathLink->text());
 	settings.setValue("pathFX", ui.pathFX->text());
 	settings.setValue("fileName", ui.fileName->text());
-
-
+	settings.endGroup();
 }
 
 
